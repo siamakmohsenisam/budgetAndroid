@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    tools:context="com.example.siamakmohsenisam.budget.MainActivity">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/boxgreen"
+            android:padding="5dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/mario" />
+
+            <ImageButton
+                android:id="@+id/imageButtonAddBudgetM"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitEnd"
+                app:srcCompat="@drawable/budget" />
+
+            <ImageButton
+                android:id="@+id/imageButtonAddAccountM"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/account" />
+
+            <ImageButton
+                android:id="@+id/imageButtonAddCategoryM"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitEnd"
+                app:srcCompat="@drawable/category" />
+
+            <ImageButton
+                android:id="@+id/imageButtonReportM"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/chart" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
