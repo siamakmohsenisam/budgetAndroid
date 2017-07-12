@@ -7,18 +7,11 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textViewCategoryNameCell"
+        android:id="@+id/textViewCell"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/edit_text"
         android:layout_weight="1"
         android:text="TextView" />
 
-    <TextView
-        android:id="@+id/textViewLimitedCell"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/edit_text"
-        android:layout_weight="1"
-        android:text="TextView" />
 </LinearLayout>

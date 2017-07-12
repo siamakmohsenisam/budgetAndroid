@@ -89,7 +89,6 @@ public class DatabaseManager extends Application {
 
         if (object instanceof Category){
             contentValues.put(DatabaseSchema.CATEGORY_NAME.getValue(),((Category) object).getCategoryName());
-            contentValues.put(DatabaseSchema.LIMITED.getValue(),((Category) object).getLimited());
         }
 
         if (object instanceof Budget){

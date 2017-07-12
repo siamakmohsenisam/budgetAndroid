@@ -26,14 +26,6 @@
             android:hint="Ctegory name : e.g.coffee"
             android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/editTextLimitationC"
-            style="@style/edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Limitation : e.g.20$"
-            android:inputType="textPersonName" />
     </LinearLayout>
 
         <LinearLayout

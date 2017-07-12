@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,7 +25,7 @@ import com.example.siamakmohsenisam.budget.model.DatabaseManager;
 import com.example.siamakmohsenisam.budget.model.DatabaseSchema;
 
 public class ListActivity extends AppCompatActivity implements SwipeMenuCreator ,
-        SwipeMenuListView.OnMenuItemClickListener , View.OnClickListener
+        SwipeMenuListView.OnMenuItemClickListener , View.OnClickListener, TextWatcher
 {
 
     /**
@@ -35,12 +37,9 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
      */
 
     EditText editTextNameA, editTextNumberA, editTextBankNameA, editTextBalanceA ,
-            editTextNameC,editTextLimitationC;
+            editTextNameC;
 
     ImageButton imageButtonCancelA, imageButtonSaveA, imageButtonCancelC, imageButtonSaveC;
-
-    TextView textViewBankNameCell, textViewAccountNameCell, textViewAccountNumberCell,
-            textViewBalanceCell , textViewCategoryNameCell, textViewLimitedCell;
 
     Account account;
 
@@ -58,6 +57,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
     Intent intent;
 
     int editIndex = -1;
+    String current="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +95,6 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
         textViewAddAC.setOnClickListener(this);
         textViewtitleAC = (TextView) findViewById(R.id.textViewtitleAC);
 
-        textViewAccountNameCell = (TextView) findViewById(R.id.textViewAccountNameCell);
-        textViewAccountNumberCell = (TextView) findViewById(R.id.textViewAccountNumberCell);
-        textViewBankNameCell = (TextView) findViewById(R.id.textViewBankNameCell);
-        textViewBalanceCell = (TextView) findViewById(R.id.textViewBalanceCell);
-
-        textViewCategoryNameCell = (TextView) findViewById(R.id.textViewCategoryNameCell);
-        textViewLimitedCell = (TextView) findViewById(R.id.textViewLimitedCell);
-
         swipeMenuListViewAC.setMenuCreator(this);
         swipeMenuListViewAC.setOnMenuItemClickListener(this);
 
@@ -120,6 +112,8 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
         editTextNameA = (EditText) dialog.findViewById(R.id.editTextNameA);
         editTextNumberA = (EditText) dialog.findViewById(R.id.editTextNumberA);
 
+        editTextBalanceA.addTextChangedListener(this);
+
         imageButtonCancelA = (ImageButton) dialog.findViewById(R.id.imageButtonCancelA);
         imageButtonSaveA = (ImageButton) dialog.findViewById(R.id.imageButtonSaveA);
 
@@ -134,7 +128,6 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
         dialog.setContentView(R.layout.category_popup);
 
         editTextNameC = (EditText) dialog.findViewById(R.id.editTextNameC);
-        editTextLimitationC = (EditText) dialog.findViewById(R.id.editTextLimitationC);
         imageButtonSaveC = (ImageButton) dialog.findViewById(R.id.imageButtonSaveC);
         imageButtonCancelC = (ImageButton) dialog.findViewById(R.id.imageButtonCancelC);
 
@@ -248,7 +241,8 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
                     account.setAccountName(editTextNameA.getText().toString());
                     account.setAccountNumber(editTextNumberA.getText().toString());
                     account.setBankName(editTextBankNameA.getText().toString());
-                    account.setBalance(Double.valueOf(editTextBalanceA.getText().toString()));
+                    account.setBalance(Double.valueOf(editTextBalanceA.getText().toString().replace("$","")));
+                    editTextNameA.requestFocus();
                     if(editIndex != -1) {
                         databaseManager.deleteRowTableAccount(new String[]{
                                 String.valueOf(findCursor(editIndex))
@@ -271,7 +265,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
 
                 try {
                     category.setCategoryName(editTextNameC.getText().toString());
-                    category.setLimited(Double.valueOf(editTextLimitationC.getText().toString()));
+                    editTextNameC.requestFocus();
                     if(editIndex != -1) {
                         databaseManager.deleteRowTableCategory(new String[]{
                                 String.valueOf(findCursor(editIndex))
@@ -304,7 +298,6 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
     }
 
     private void cleanPopupCategory() {
-        editTextLimitationC.setText("");
         editTextNameC.setText("");
     }
     private void fillPopupAccount(){
@@ -317,7 +310,6 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
 
     private void fillPopupCategory() {
         fillCategory(editIndex);
-        editTextLimitationC.setText(String.valueOf(category.getLimited()));
         editTextNameC.setText(category.getCategoryName());
     }
     /**
@@ -328,7 +320,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
                 DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","));
         simpleCursorAdapter = new
                 SimpleCursorAdapter(this,
-                R.layout.account_list_cell,
+                R.layout.four_text_cell,
                 cursor,
                 new String[]{DatabaseSchema.BANK_NAME.getValue(),DatabaseSchema.ACCOUNT_NAME.getValue(),
                         DatabaseSchema.ACCOUNT_NUMBER.getValue(), DatabaseSchema.BALANCE.getValue()},
@@ -359,7 +351,8 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
         for (int i=0 ; i<position; i++)
             cursor.moveToNext();
         account.setAccountNumber(cursor.getString(4));
-        account.setBalance(Double.valueOf(cursor.getString(3)));
+
+        account.setBalance(Double.valueOf(cursor.getString(3).replace("$","")));
         account.setBankName(cursor.getString(2));
         account.setAccountName(cursor.getString(1));
     }
@@ -369,7 +362,6 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
         for (int i=0 ; i<position; i++)
             cursor.moveToNext();
         category.setCategoryName(cursor.getString(1));
-        category.setLimited(Double.valueOf(cursor.getString(2)));
     }
 
     private void fillCursorCategory() {
@@ -378,15 +370,43 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator 
                 DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","));
         simpleCursorAdapter = new
                 SimpleCursorAdapter(this,
-                R.layout.category_list_cell,
+                R.layout.one_text_cell,
                 cursor,
-                new String[]{DatabaseSchema.CATEGORY_NAME.getValue(),DatabaseSchema.LIMITED.getValue() },
-                new int[]{R.id.textViewCategoryNameCell,R.id.textViewLimitedCell},1
+                new String[]{DatabaseSchema.CATEGORY_NAME.getValue() },
+                new int[]{R.id.textViewLeftCell},1
         );
         swipeMenuListViewAC.setAdapter(simpleCursorAdapter);
         simpleCursorAdapter.changeCursor(cursor);
         simpleCursorAdapter.notifyDataSetChanged();
 
     }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+        if (textViewtitleAC.getText().equals("Account list")) {
+            if (editTextBalanceA.isFocused()) {
+                editTextBalanceA.removeTextChangedListener(this);
+                current = s.toString().replace("$", "");
+                current = current + "$";
+                editTextBalanceA.setText(current);
+                editTextBalanceA.setSelection(current.toString().length() - 1);
+                editTextBalanceA.addTextChangedListener(this);
+            }
+            }
+    }
+
+
+
 
 }

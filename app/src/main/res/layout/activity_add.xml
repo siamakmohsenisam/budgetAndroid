@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorPrimary"
-    android:padding="10dp"
+    android:padding="15dp"
     tools:context="com.example.siamakmohsenisam.budget.AddActivity">
 
     <TextView
@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/boxwhite"
+            android:padding="10dp"
             android:orientation="vertical">
 
             <ImageView
@@ -79,24 +80,49 @@
                     android:ems="10"
                     android:gravity="center_vertical"
                     android:hint="E.g. 2000$"
+
                     android:inputType="numberDecimal"
                     android:textColor="@color/colorWhite"
                     android:textColorHint="@color/colorHint"
                     android:textSize="20sp" />
 
                 <Spinner
-                    android:id="@+id/spinnerCategoryI"
+                    android:id="@+id/spinnerUpI"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:textColor="@color/colorWhite" />
 
                 <Spinner
-                    android:id="@+id/spinnerAccountI"
+                    android:id="@+id/spinnerDownI"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:textColor="@color/colorWhite" />
 
 
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/imageButtonCancelI"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/cancel" />
+
+                <ImageButton
+                    android:id="@+id/imageButtonSaveI"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/save" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

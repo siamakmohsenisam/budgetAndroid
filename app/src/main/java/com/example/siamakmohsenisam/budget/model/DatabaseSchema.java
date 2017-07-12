@@ -29,8 +29,7 @@ public enum DatabaseSchema {
 
     ID_CATEGORY("_id"),
     CATEGORY_NAME("category_name"),
-    LIMITED("limited"),
-    CATEGORY_COLUMNS("_id,category_name,limited"),
+    CATEGORY_COLUMNS("_id,category_name"),
 
     /**
      *  table of budget
@@ -78,8 +77,7 @@ public enum DatabaseSchema {
         String string="";
         string += "CREATE TABLE "+TABLE_NAME_CATEGORY.getValue()+"(";
         string +=  ID_CATEGORY.getValue()+ " INTEGER PRIMARY KEY,";
-        string +=  CATEGORY_NAME.getValue()+ " TEXT unique ,";
-        string +=  LIMITED.getValue() + " DOUBLE );";
+        string +=  CATEGORY_NAME.getValue()+ " TEXT unique );";
 
         return string;
     }

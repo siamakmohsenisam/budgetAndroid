@@ -4,58 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorPrimary"
+    android:orientation="vertical"
     tools:context="com.example.siamakmohsenisam.budget.AddBudgetActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:fillViewport="true"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/boxgold"
-            android:padding="10dp"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:layout_marginBottom="30dp"
                 android:background="@color/colorPrimary"
                 android:scaleType="fitCenter"
-                android:layout_marginBottom="30dp"
                 app:srcCompat="@drawable/mario2" />
+
             <ImageButton
                 android:id="@+id/imageButtonAddIncomeB"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@color/colorPrimary"
-                android:scaleType="fitEnd"
                 android:layout_marginEnd="40dp"
                 android:layout_marginRight="40dp"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitEnd"
                 app:srcCompat="@drawable/income" />
 
             <ImageButton
                 android:id="@+id/imageButtonAddExpenseB"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@color/colorPrimary"
                 android:layout_marginLeft="40dp"
                 android:layout_marginStart="40dp"
-                android:scaleType="fitStart"                app:srcCompat="@drawable/expense" />
+                android:background="@color/colorPrimary"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/expense" />
 
             <ImageButton
                 android:id="@+id/imageButtonTransferB"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
                 android:background="@color/colorPrimary"
                 android:scaleType="fitEnd"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"                app:srcCompat="@drawable/transfer" />
+                app:srcCompat="@drawable/transfer" />
         </LinearLayout>
-
 
 
     </ScrollView>

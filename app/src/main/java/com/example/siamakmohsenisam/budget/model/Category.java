@@ -7,7 +7,6 @@ package com.example.siamakmohsenisam.budget.model;
 public class Category {
 
     private String categoryName;
-    private double limited;
 
     public Category() {
         this("" , 0.0);
@@ -15,7 +14,6 @@ public class Category {
 
     public Category(String categoryName, double limited) {
         this.categoryName = categoryName;
-        this.limited = limited;
     }
 
     public String getCategoryName() {
@@ -30,18 +28,8 @@ public class Category {
         else throw new IllegalArgumentException("category name is not correct");
     }
 
-    public double getLimited() {
-        return limited;
-    }
-
-    public void setLimited(double limited) {
-        if (String.valueOf(limited).matches(MyPattern.DecimalNumber.getMyPattern()))
-            this.limited = limited;
-        else throw new IllegalArgumentException("limited is not correct");
-    }
-
     @Override
     public String toString() {
-        return categoryName +" : " + limited ;
+        return categoryName ;
     }
 }

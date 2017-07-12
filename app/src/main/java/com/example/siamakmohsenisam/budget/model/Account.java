@@ -64,8 +64,9 @@ public class Account {
     }
 
     public void setBalance(Double balance) {
-        if (String.valueOf(balance).matches(MyPattern.DecimalNumber.getMyPattern()))
-            this.balance = balance;
+        if (String.valueOf(balance).matches(MyPattern.DecimalNumber.getMyPattern())) {
+            this.balance = Double.valueOf(String.format("%.2f",balance));
+        }
         else throw new IllegalArgumentException("balance is not correct");
 
     }
