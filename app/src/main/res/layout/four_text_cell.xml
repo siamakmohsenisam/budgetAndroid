@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
-            android:gravity="right|fill_vertical"
+            android:gravity="right|fill_vertical|end"
             android:text="TextView"
             android:textStyle="bold" />
 

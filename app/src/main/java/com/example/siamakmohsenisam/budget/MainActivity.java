@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.imageButtonAddBudgetM:
 
-                intent = new Intent(this,AddBudgetActivity.class);
+                intent = new Intent(this,SelectBudgetActivity.class);
                 startActivity(intent);
 
                 break;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.imageButtonReportM:
-//                intent = new Intent(this,AddBudgetActivity.class);
+//                intent = new Intent(this,SelectBudgetActivity.class);
 //                startActivity(intent);
 
                 break;

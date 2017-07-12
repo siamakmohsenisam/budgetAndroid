@@ -56,7 +56,7 @@ public class Budget {
 
     public void setAmount(double amount) {
         if (String.valueOf(amount).matches(MyPattern.DecimalNumber.getMyPattern()))
-            this.amount = amount;
+            this.amount = Double.valueOf(String.format("%.2f",amount));
         else throw new IllegalArgumentException("amount is not correct");
     }
 

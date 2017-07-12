@@ -9,10 +9,10 @@ public class Category {
     private String categoryName;
 
     public Category() {
-        this("" , 0.0);
+        this("");
     }
 
-    public Category(String categoryName, double limited) {
+    public Category(String categoryName) {
         this.categoryName = categoryName;
     }
 
