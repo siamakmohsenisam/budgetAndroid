@@ -56,7 +56,7 @@ public class Budget {
 
     public void setAmount(double amount) {
         if (String.valueOf(amount).matches(MyPattern.DecimalNumber.getMyPattern()))
-            this.amount = Double.valueOf(String.format("%.2f",amount));
+            this.amount = Double.valueOf(String.format("%15.2f",amount));
         else throw new IllegalArgumentException("amount is not correct");
     }
 
@@ -67,6 +67,10 @@ public class Budget {
 
     public String getStringDate(){
         return date.get(Calendar.YEAR)+"-"+(1+date.get(Calendar.MONTH))+
+                "-"+date.get(Calendar.DATE);
+    }
+    public String getStringDateReal(){
+        return date.get(Calendar.YEAR)+"-"+(date.get(Calendar.MONTH))+
                 "-"+date.get(Calendar.DATE);
     }
 

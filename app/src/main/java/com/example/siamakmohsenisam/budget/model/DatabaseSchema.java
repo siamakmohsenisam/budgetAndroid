@@ -12,9 +12,9 @@ public enum DatabaseSchema {
      *   table of Account
      */
 
-    TABLE_NAME_ACOUNNT("account"),
+    TABLE_NAME_ACCOUNT("account"),
 
-    ID_ACOUNNT("_id"),
+    ID_ACCOUNT("_id"),
     ACCOUNT_NAME("account_name"),
     BANK_NAME("bank_name"),
     BALANCE("balance"),
@@ -42,7 +42,7 @@ public enum DatabaseSchema {
     ID_CATEGORY_FOREIGN_KEY("category_id"),
     BUDGET_DATE("budget_date"),
     AMOUNTH("amounth"),
-    BUDGETCOLUMN("_id,account_id,category_id,date,amounth"),
+    BUDGET_COLUMNS("_id,account_id,category_id,date,amounth"),
 
     CREATE_ACCOUNT(createAccount()),
     CREATE_CATEGORY(createCategory()),
@@ -63,9 +63,9 @@ public enum DatabaseSchema {
     private static String createAccount(){
 
         String string="";
-        string += "CREATE TABLE "+TABLE_NAME_ACOUNNT.getValue()+"(";
-        string +=  ID_ACOUNNT.getValue()+ " INTEGER PRIMARY KEY,";
-        string +=  ACCOUNT_NAME.getValue()+ " TEXT ,";
+        string += "CREATE TABLE "+ TABLE_NAME_ACCOUNT.getValue()+"(";
+        string +=  ID_ACCOUNT.getValue()+ " INTEGER PRIMARY KEY,";
+        string +=  ACCOUNT_NAME.getValue()+ " TEXT , ";
         string +=  ACCOUNT_NUMBER.getValue() + " TEXT ,";
         string +=  BALANCE.getValue() + " DOUBLE ,";
         string +=  BANK_NAME.getValue() + " TEXT );";
@@ -95,8 +95,9 @@ public enum DatabaseSchema {
                   ") REFERENCES " + TABLE_NAME_CATEGORY.getValue()+" (" +ID_CATEGORY.getValue() + "),";
 
         string += "FOREIGN KEY ("+ ID_ACCOUNT_FOREIGN_KEY.getValue()+
-                ") REFERENCES " + TABLE_NAME_ACOUNNT.getValue()+" (" +ID_ACOUNNT.getValue() + "));";
+                ") REFERENCES " + TABLE_NAME_ACCOUNT.getValue()+" (" + ID_ACCOUNT.getValue() + "));";
 
         return string;
     }
+
 }

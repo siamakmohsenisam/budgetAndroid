@@ -49,19 +49,35 @@ public class DatabaseManager extends Application {
                 DatabaseSchema.BANK_NAME.getValue()+"=? ",whereArgs);
     }
 
+    public Cursor querySelectAll(){
+
+        String sql="";
+        sql += "select * from ";
+        sql += DatabaseSchema.TABLE_NAME_BUDGET.getValue()+" b , ";
+        sql += DatabaseSchema.TABLE_NAME_CATEGORY.getValue()+" c , ";
+        sql += DatabaseSchema.TABLE_NAME_ACCOUNT.getValue()+" a ";
+        sql += " where ";
+        sql += " b."+DatabaseSchema.ID_ACCOUNT_FOREIGN_KEY.getValue()+" = a." + DatabaseSchema.ID_ACCOUNT.getValue() +" and ";
+        sql += " b."+DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue()+" = c." + DatabaseSchema.ID_CATEGORY.getValue() +" ; ";
+        return sqLiteDatabase.rawQuery(sql,null);
+    }
+
     public Cursor querySelectAll(String tableName , String[] columns ){
         return sqLiteDatabase.query(tableName,columns,null,null,null,null,null);
     }
 
     public long deleteRowTableAccount(String[] whereArgs){
-        return sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_ACOUNNT.getValue(),
-                DatabaseSchema.ID_ACOUNNT.getValue()+"=? ",whereArgs);
+        return sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
+                DatabaseSchema.ID_ACCOUNT.getValue()+"=? ",whereArgs);
     }
     public long deleteRowTableCategory(String[] whereArgs){
         return sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
                 DatabaseSchema.ID_CATEGORY.getValue()+"=? ",whereArgs);
     }
-
+    public long deleteRowTableBudget(String[] whereArgs){
+        return sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_BUDGET.getValue(),
+                DatabaseSchema.ID_BUDGET.getValue()+"=? ",whereArgs);
+    }
 
 //
 //    public long deleteDatabaseValue(ContentValues values, String[] emails ){
@@ -76,7 +92,7 @@ public class DatabaseManager extends Application {
 //        this.deleteDatabase(Schema.DATABASE_NAME.getValue());
 //        Log.d("DATABASE","The database "+Schema.DATABASE_NAME.getValue()+" is removed successfully");
 //    }
-    public <T> ContentValues makeContentValue(T object) {
+    public <T> ContentValues makeContentValue(T object, int... idAccountCategory) {
 
         ContentValues contentValues = new ContentValues();
 
@@ -92,8 +108,10 @@ public class DatabaseManager extends Application {
         }
 
         if (object instanceof Budget){
-            contentValues.put(DatabaseSchema.BUDGET_DATE.getValue(),((Budget) object).getDate().getTimeInMillis());
+            contentValues.put(DatabaseSchema.BUDGET_DATE.getValue(),((Budget) object).getStringDateReal());
             contentValues.put(DatabaseSchema.AMOUNTH.getValue(),((Budget) object).getAmount());
+            contentValues.put(DatabaseSchema.ID_ACCOUNT_FOREIGN_KEY.getValue(),(idAccountCategory[0]));
+            contentValues.put(DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue(),(idAccountCategory[1]));
         }
 
 

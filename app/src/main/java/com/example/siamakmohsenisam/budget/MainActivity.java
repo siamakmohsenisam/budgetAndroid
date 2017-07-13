@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.imageButtonAddBudgetM:
 
-                intent = new Intent(this,SelectBudgetActivity.class);
+                intent = new Intent(this,ListBudgetActivity.class);
                 startActivity(intent);
 
                 break;

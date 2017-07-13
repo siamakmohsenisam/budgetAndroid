@@ -1,6 +1,7 @@
 package com.example.siamakmohsenisam.budget;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +16,17 @@ import android.widget.ImageButton;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.siamakmohsenisam.budget.model.Account;
 import com.example.siamakmohsenisam.budget.model.Budget;
+import com.example.siamakmohsenisam.budget.model.Category;
 import com.example.siamakmohsenisam.budget.model.DatabaseManager;
 import com.example.siamakmohsenisam.budget.model.DatabaseSchema;
 
 
 public class AddBudgetActivity extends AppCompatActivity implements View.OnClickListener,
-        CalendarView.OnDateChangeListener, TextWatcher , AdapterView.OnItemSelectedListener{
+        CalendarView.OnDateChangeListener, TextWatcher , AdapterView.OnItemSelectedListener {
 
     ImageButton imageButtonDateI, imageButtonCancelI, imageButtonSaveI;
     Spinner spinnerDownI, spinnerUpI;
@@ -34,9 +39,15 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
 
     SimpleCursorAdapter simpleCursorAdapter;
     Budget budget;
-    Cursor cursor;
+    Category category;
+    Account account;
+    Cursor cursorAccount, cursorCategory;
 
+    Intent intent;
+
+    int idCategory=0, idAccount1=0, idAccount2=0;
     String current = "";
+    Boolean myStart=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +79,8 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
         editTextAmounthI.addTextChangedListener(this);
 
         budget = new Budget();
+        account = new Account();
+        category = new Category();
 
         textViewDateI.setText(budget.getStringDate());
 
@@ -83,34 +96,62 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
             fillCursorCategory(spinnerUpI);
         }
     }
+
+    private int fillAccount(int position) {
+        cursorAccount.moveToFirst();
+        for (int i = 0; i < position; i++)
+            cursorAccount.moveToNext();
+        account.setBankName(cursorAccount.getString(2));
+        account.setBalance(cursorAccount.getDouble(3));
+        account.setAccountNumber(cursorAccount.getString(4));
+        account.setAccountName(cursorAccount.getString(1));
+        return cursorAccount.getInt(0);
+    }
+
+    private int fillCategory(int position) {
+        cursorCategory.moveToFirst();
+        for (int i = 0; i < position; i++)
+            cursorCategory.moveToNext();
+        category.setCategoryName(cursorCategory.getString(1));
+        return cursorCategory.getInt(0);
+    }
+
+    private void fillBudget(){
+        budget.setDate(textViewDateI.getText().toString());
+        Toast.makeText(this,budget.getStringDate(),Toast.LENGTH_LONG).show();
+        budget.setAmount(Double.valueOf(editTextAmounthI.getText().toString().replace("$","")));
+        budget.setAccount(account);
+        budget.setCategory(category);
+    }
+
     private void fillCursorAccount(Spinner spinner) {
-        cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACOUNNT.getValue(),
+        cursorAccount = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
                 DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","));
         simpleCursorAdapter = new
                 SimpleCursorAdapter(this,
                 R.layout.two_text_cell,
-                cursor,
+                cursorAccount,
                 new String[]{DatabaseSchema.BANK_NAME.getValue(),DatabaseSchema.ACCOUNT_NAME.getValue()},
                 new int[]{R.id.textViewLeftCell,R.id.textViewRightCell},1
         );
         spinner.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursor);
+        simpleCursorAdapter.changeCursor(cursorAccount);
         simpleCursorAdapter.notifyDataSetChanged();
     }
 
     private void fillCursorCategory(Spinner spinner) {
-        cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
+        cursorCategory = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
                 DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","));
         simpleCursorAdapter = new
                 SimpleCursorAdapter(this,
                 R.layout.one_text_cell,
-                cursor,
+                cursorCategory,
                 new String[]{DatabaseSchema.CATEGORY_NAME.getValue()},
                 new int[]{R.id.textViewCell}, 1
         );
 
         spinner.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursor);
+        simpleCursorAdapter.changeCursor(cursorCategory);
         simpleCursorAdapter.notifyDataSetChanged();
     }
 
@@ -133,8 +174,17 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
             case R.id.imageButtonSaveI:
 
                 try {
-                    budget.setDate(textViewDateI.getText().toString());
-             //       budget.setAccount(spinnerUpI.get);
+
+                    fillBudget();
+                    databaseManager.insertInTable( databaseManager.makeContentValue(budget,new int[] {idAccount1, idCategory}),
+                            DatabaseSchema.TABLE_NAME_BUDGET.getValue());
+                    Toast.makeText(this,"one row was insert",Toast.LENGTH_LONG).show();
+
+                    intent = new Intent(this,ListBudgetActivity.class);
+                    startActivity(intent);
+
+                    finish();
+
                 }catch (Exception e){}
 
                 break;
@@ -177,6 +227,22 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        Spinner spin = (Spinner)parent;
+
+            switch (spin.getId()) {
+                case R.id.spinnerUpI:
+                    idAccount1 = fillAccount(position);
+                    break;
+
+                case R.id.spinnerDownI:
+                    if (textViewTitleI.getText().equals("Add transfer"))
+                        idAccount2 = fillAccount(position);
+                    else idCategory = fillCategory(position);
+                    break;
+            }
+
+
 
     }
 

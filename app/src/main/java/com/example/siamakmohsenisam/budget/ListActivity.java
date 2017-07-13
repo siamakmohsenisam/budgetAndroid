@@ -50,7 +50,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
     SwipeMenuListView swipeMenuListViewAC;
 
     SimpleCursorAdapter simpleCursorAdapter;
-    Cursor cursor;
+    Cursor cursor,cursorForDelete;
     DatabaseManager databaseManager;
 
     Intent intent;
@@ -195,12 +195,14 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
                 break;
             case 1:
                 if (textViewtitleAC.getText().equals("Account list")) {
+                    deleteFromBudget(findCursor(position),2);
                     databaseManager.deleteRowTableAccount(new String[]{
                             String.valueOf(findCursor(position))
                     });
                     fillCursorAccount();
                 }
                 if (textViewtitleAC.getText().equals("Category list")) {
+                    deleteFromBudget(findCursor(position),1);
                     databaseManager.deleteRowTableCategory(new String[]{
                             String.valueOf(findCursor(position))
                     });
@@ -247,7 +249,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
                         });
                         editIndex = -1;
                     }
-                    databaseManager.insertInTable(databaseManager.makeContentValue(account), DatabaseSchema.TABLE_NAME_ACOUNNT.getValue());
+                    databaseManager.insertInTable(databaseManager.makeContentValue(account), DatabaseSchema.TABLE_NAME_ACCOUNT.getValue());
 
                     fillCursorAccount();
 
@@ -322,7 +324,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
         for (int i = 0; i < position; i++)
             cursor.moveToNext();
         account.setAccountNumber(cursor.getString(4));
-        account.setBalance(Double.valueOf(cursor.getString(3)));
+        account.setBalance(cursor.getDouble(3));
         account.setBankName(cursor.getString(2));
         account.setAccountName(cursor.getString(1));
     }
@@ -346,12 +348,24 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
             cursor.moveToNext();
         return cursor.getInt(0);
     }
+    private void deleteFromBudget(int id, int positionInDatabase) {
+        cursorForDelete = databaseManager.querySelectAll();
+        cursorForDelete.moveToFirst();
+        for (int i = 0; i < cursorForDelete.getCount(); i++) {
+            if (cursorForDelete.getInt(positionInDatabase)==id) {
+                databaseManager.deleteRowTableBudget(new String[]{
+                        String.valueOf(cursorForDelete.getInt(0))});
 
+            }
+
+            cursor.moveToNext();
+        }
+    }
     /**
      * fill coursors
      */
     private void fillCursorAccount() {
-        cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACOUNNT.getValue(),
+        cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
                 DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","));
         simpleCursorAdapter = new
                 SimpleCursorAdapter(this,
@@ -359,8 +373,8 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
                 cursor,
                 new String[]{DatabaseSchema.BANK_NAME.getValue(), DatabaseSchema.ACCOUNT_NAME.getValue(),
                         DatabaseSchema.ACCOUNT_NUMBER.getValue(), DatabaseSchema.BALANCE.getValue()},
-                new int[]{R.id.textViewBankNameCell, R.id.textViewAccountNameCell,
-                        R.id.textViewAccountNumberCell, R.id.textViewBalanceCell}, 1
+                new int[]{R.id.textViewUpLeftCell, R.id.textViewUpMiddelCell,
+                        R.id.textViewLeftDownCell, R.id.textViewRightCell}, 1
         );
         swipeMenuListViewAC.setAdapter(simpleCursorAdapter);
         simpleCursorAdapter.changeCursor(cursor);

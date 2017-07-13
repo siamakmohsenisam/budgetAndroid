@@ -20,15 +20,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SelectBudgetActivity"
-            android:label="Add Budget" />
-        <activity
             android:name=".AddBudgetActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".ListActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-        </activity>
+        <activity
+            android:name=".ListActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+        <activity android:name=".ListBudgetActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:label="List of Budget"></activity>
     </application>
 
 </manifest>
