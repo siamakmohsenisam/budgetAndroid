@@ -45,10 +45,14 @@ public class DatabaseManager extends Application {
     }
 
     public int updateTableAccount(ContentValues values, String tableName, String[] whereArgs ){
-        return sqLiteDatabase.update(tableName,values,DatabaseSchema.ACCOUNT_NAME.getValue()+"=? "+
-                DatabaseSchema.BANK_NAME.getValue()+"=? ",whereArgs);
+        return sqLiteDatabase.update(tableName,values,DatabaseSchema.ID_ACCOUNT.getValue()+" =? " ,whereArgs);
     }
-
+    public int updateTableCategory(ContentValues values, String tableName, String[] whereArgs ){
+        return sqLiteDatabase.update(tableName,values,DatabaseSchema.ID_CATEGORY.getValue()+" =? " ,whereArgs);
+    }
+    public int updateTableBudget(ContentValues values, String tableName, String[] whereArgs ){
+        return sqLiteDatabase.update(tableName,values,DatabaseSchema.ID_BUDGET.getValue()+" =? " ,whereArgs);
+    }
     public Cursor querySelectAll(){
 
         String sql="";
@@ -78,6 +82,10 @@ public class DatabaseManager extends Application {
         return sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_BUDGET.getValue(),
                 DatabaseSchema.ID_BUDGET.getValue()+"=? ",whereArgs);
     }
+
+
+
+
 
 //
 //    public long deleteDatabaseValue(ContentValues values, String[] emails ){
@@ -113,8 +121,39 @@ public class DatabaseManager extends Application {
             contentValues.put(DatabaseSchema.ID_ACCOUNT_FOREIGN_KEY.getValue(),(idAccountCategory[0]));
             contentValues.put(DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue(),(idAccountCategory[1]));
         }
-
-
         return contentValues;
+    }
+    public Account fillAccountWithCursor(Cursor cursor,int position) {
+
+        Account account = new Account();
+        findIdFromCursorPosition(cursor,position);
+
+        account.setAccountNumber(cursor.getString(4));
+        account.setBalance(cursor.getDouble(3));
+        account.setBankName(cursor.getString(2));
+        account.setAccountName(cursor.getString(1));
+        return account;
+    }
+    public Category fillCategoryWithCursor(Cursor cursor,int position) {
+        Category category = new Category();
+        findIdFromCursorPosition(cursor,position);
+        category.setCategoryName(cursor.getString(1));
+        return category;
+    }
+
+    public int findIdFromCursorPosition(Cursor cursor,int position) {
+        cursor.moveToFirst();
+        for (int i = 0; i < position; i++)
+            cursor.moveToNext();
+        return cursor.getInt(0);
+    }
+    public int findPositionfromCursorId(Cursor cursor, int id) {
+        cursor.moveToFirst();
+        for (int i = 0; i < cursor.getCount(); i++) {
+            if (cursor.getInt(0) == id)
+                return i;
+            cursor.moveToNext();
+        }
+        return 0;
     }
 }

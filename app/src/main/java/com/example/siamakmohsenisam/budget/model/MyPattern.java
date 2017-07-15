@@ -12,7 +12,7 @@ public enum MyPattern {
     UserName("^\\w*$"),
     Date("^(\\d{3,4})-([0][1-9]|[1-9]|[1][0-2])-([1-9]|[0][1-9]|[1-2][0-9]|[3][0-1])$"),
     IntegerNumber("^\\d+$"),
-    DecimalNumber("(^\\d+$)|(^\\d+\\.\\d+$)");
+    DecimalNumber("(^\\-{0,1}\\d+$)|(^\\-{0,1}\\d+\\.\\d+$)");
 
     private final String myPattern;
 

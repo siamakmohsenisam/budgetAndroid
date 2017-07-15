@@ -60,7 +60,7 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
         swipeMenuListViewLB.setMenuCreator(this);
         swipeMenuListViewLB.setOnMenuItemClickListener(this);
 
-        fillCursorBudget();
+        fillCursorBudgetAdapter();
     }
 
     /**
@@ -113,14 +113,26 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
             // delete button
             case 0:
                 editIndex = position;
+                databaseManager.findIdFromCursorPosition(cursor,position);
+                intent = new Intent(this,AddBudgetActivity.class);
+                intent.putExtra("editIndex",editIndex);
+                intent.putExtra("title","Edit budget");
+
+                intent.putExtra("id",cursor.getInt(0));
+                intent.putExtra("tagUp",cursor.getInt(2));
+                intent.putExtra("tagDown",cursor.getInt(1));
+                intent.putExtra("date",cursor.getString(3));
+                intent.putExtra("amount",cursor.getDouble(4));
+                startActivity(intent);
+                finish();
 
                 break;
             case 1:
 
                     databaseManager.deleteRowTableBudget(new String[]{
-                            String.valueOf(findCursor(position))
+                            String.valueOf(databaseManager.findIdFromCursorPosition(cursor,position))
                     });
-                    fillCursorBudget();
+                    fillCursorBudgetAdapter();
                 break;
         }
 
@@ -135,42 +147,28 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
         switch (v.getId()) {
             case R.id.buttonExpenseLB:
                 intent = new Intent(this, AddBudgetActivity.class);
-                intent.putExtra("tag","Add expense");
+                intent.putExtra("title","Add expense");
                 startActivity(intent);
                 finish();
                 break;
             case R.id.buttonIncomeLB:
                 intent = new Intent(this, AddBudgetActivity.class);
-                intent.putExtra("tag","Add income");
+                intent.putExtra("title","Add income");
                 startActivity(intent);
                 finish();
                 break;
             case R.id.buttonTransferLB:
                 intent = new Intent(this, AddBudgetActivity.class);
-                intent.putExtra("tag","Add transfer");
+                intent.putExtra("title","Add transfer");
                 startActivity(intent);
                 finish();
                 break;
         }
     }
-
-    /**
-     * find coursor
-     *
-     * @param position
-     * @return
-     */
-    private int findCursor(int position) {
-        cursor.moveToFirst();
-        for (int i = 0; i < position; i++)
-            cursor.moveToNext();
-        return cursor.getInt(0);
-    }
-
     /**
      * fill coursors
      */
-    private void fillCursorBudget() {
+    private void fillCursorBudgetAdapter() {
         cursor = databaseManager.querySelectAll();
         simpleCursorAdapter = new
                 SimpleCursorAdapter(this,
