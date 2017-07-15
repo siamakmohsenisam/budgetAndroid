@@ -259,7 +259,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
 
                     fillCursorAccountAdapter();
 
-                    Toast.makeText(this, "add one row in account table", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "add one row in account1 table", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
                 } catch (Exception e) { startAlert(e.getMessage());
                 }

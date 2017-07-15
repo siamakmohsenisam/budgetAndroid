@@ -28,7 +28,7 @@ import com.example.siamakmohsenisam.budget.model.DatabaseSchema;
 
 
 public class AddBudgetActivity extends AppCompatActivity implements View.OnClickListener,
-        CalendarView.OnDateChangeListener, TextWatcher , AdapterView.OnItemSelectedListener,DialogInterface.OnClickListener{
+        CalendarView.OnDateChangeListener, TextWatcher, AdapterView.OnItemSelectedListener, DialogInterface.OnClickListener {
 
     ImageButton imageButtonDateI, imageButtonCancelI, imageButtonSaveI;
     Spinner spinnerDownI, spinnerUpI;
@@ -45,15 +45,16 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
     SimpleCursorAdapter simpleCursorAdapter;
     Budget budget;
     Category category;
-    Account account;
-    Cursor cursorAccount, cursorCategory;
+    Account account1, account2;
+    Cursor cursorAccount1,cursorAccount2, cursorCategory;
 
     Intent intent;
 
-    int idCategory=0, idAccount1=0, idAccount2=0,idBudget=0;
+    int idCategory = 0, idAccount1 = 0, idAccount2 = 0, idBudget = 0;
     String current = "";
-    int idSpinnerUp =0 , idSpinnerDown =0;
-    double amountOld=0;
+    int idSpinnerUp = 0, idSpinnerDown = 0;
+    double amountOld = 0;
+    int categoryPosition =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,44 +87,48 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
         spinnerUpI.setOnItemSelectedListener(this);
         editTextAmountI.addTextChangedListener(this);
 
-        aBuilder = new  AlertDialog.Builder(this);
+        aBuilder = new AlertDialog.Builder(this);
         budget = new Budget();
 
         textViewDateI.setText(budget.getStringDate());
 
-        textViewUpI.setText("Choose a account :");
+        textViewUpI.setText("Choose an account1 :");
         textViewDownI.setText("Choose a category :");
 
-        if (getIntent().getExtras()!=null){
+        if (getIntent().getExtras() != null) {
             textViewTitleI.setText(getIntent().getStringExtra("title"));
-            if (textViewTitleI.getText().toString().equals("Edit budget")){
-                idBudget = getIntent().getIntExtra("id",0);
-                idSpinnerUp = getIntent().getIntExtra("tagUp",0);
-                idSpinnerDown = getIntent().getIntExtra("tagDown",0);
+
+            if (textViewTitleI.getText().toString().equals("Edit budget")) {
+                idBudget = getIntent().getIntExtra("id", 0);
+                idSpinnerUp = getIntent().getIntExtra("tagUp", 0);
+                idSpinnerDown = getIntent().getIntExtra("tagDown", 0);
                 textViewDateI.setText(getIntent().getStringExtra("date"));
-                amountOld = getIntent().getDoubleExtra("amount",0.0);
-                if (amountOld<0)
-                    editTextAmountI.setText(String.valueOf(amountOld*-1));
+                amountOld = getIntent().getDoubleExtra("amount", 0.0);
+                if (amountOld < 0)
+                    editTextAmountI.setText(String.valueOf(amountOld * -1));
                 else
                     editTextAmountI.setText(String.valueOf(amountOld));
 
             }
         }
-        if (textViewTitleI.getText().equals("Add transfer")){
-            fillCursorAccountAdapter(spinnerUpI);
-            fillCursorAccountAdapter(spinnerDownI);
+
+
+        if (textViewTitleI.getText().equals("Add transfer")) {
+            cursorAccount1 = fillCursorAccountAdapter(spinnerUpI);
+            cursorAccount2 = fillCursorAccountAdapter(spinnerDownI);
+
             textViewUpI.setText("From :");
             textViewDownI.setText("To :");
-        }
-        else {
+        } else {
 
-            fillCursorAccountAdapter(spinnerUpI);
+            cursorAccount1 = fillCursorAccountAdapter(spinnerUpI);
             fillCursorCategoryAdapter(spinnerDownI);
 
-            spinnerUpI.setSelection(databaseManager.findPositionfromCursorId(cursorAccount,idSpinnerUp));
-            spinnerDownI.setSelection(databaseManager.findPositionfromCursorId(cursorCategory,idSpinnerDown));
+            spinnerUpI.setSelection(databaseManager.findPositionFromCursorId(cursorAccount1, idSpinnerUp));
+            spinnerDownI.setSelection(databaseManager.findPositionFromCursorId(cursorCategory, idSpinnerDown));
         }
     }
+
     private void startAlert(String title) {
         aBuilder.setTitle(title);
         aBuilder.setNegativeButton("Ok", this);
@@ -131,26 +136,28 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
         alertDialog = aBuilder.create();
         alertDialog.show();
     }
-    private void fillBudgetFromInput(){
+
+    private void fillBudgetFromInput(Account account) {
         budget.setDate(textViewDateI.getText().toString());
-        budget.setAmount(Double.valueOf(editTextAmountI.getText().toString().replace("$","")));
+        budget.setAmount(Double.valueOf(editTextAmountI.getText().toString().replace("$", "")));
         budget.setAccount(account);
         budget.setCategory(category);
     }
 
-    private void fillCursorAccountAdapter(Spinner spinner) {
-        cursorAccount = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
+    private Cursor fillCursorAccountAdapter(Spinner spinner) {
+        Cursor cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
                 DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","));
         simpleCursorAdapter = new
                 SimpleCursorAdapter(this,
                 R.layout.two_text_cell,
-                cursorAccount,
-                new String[]{DatabaseSchema.BANK_NAME.getValue(),DatabaseSchema.ACCOUNT_NAME.getValue()},
-                new int[]{R.id.textViewLeftCell,R.id.textViewRightCell},1
+                cursor,
+                new String[]{DatabaseSchema.BANK_NAME.getValue(), DatabaseSchema.ACCOUNT_NAME.getValue()},
+                new int[]{R.id.textViewLeftCell, R.id.textViewRightCell}, 1
         );
         spinner.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursorAccount);
+        simpleCursorAdapter.changeCursor(cursor);
         simpleCursorAdapter.notifyDataSetChanged();
+        return cursor;
     }
 
     private void fillCursorCategoryAdapter(Spinner spinner) {
@@ -172,7 +179,7 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.imageButtonDateI:
 
@@ -188,50 +195,53 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
             case R.id.imageButtonSaveI:
 
                 try {
+                    if (textViewTitleI.getText().toString().equals("Add transfer")) {
 
-                    fillBudgetFromInput();
+                        category = new Category("Transfer");
+                        cursorCategory = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
+                                DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","));
 
-                    if (textViewTitleI.getText().toString().equals("Edit budget")){
+                        categoryPosition = databaseManager.findPositionCategoryNameFromCursor(cursorCategory, "Transfer");
+                        if (categoryPosition == -1) {
+                            databaseManager.insertInTable(databaseManager.makeContentValue(category),
+                                    DatabaseSchema.TABLE_NAME_CATEGORY.getValue());
+                            cursorCategory = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
+                                    DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","));
+                            categoryPosition = databaseManager.findPositionCategoryNameFromCursor(cursorCategory, "Transfer");
 
-                        if (amountOld < 0)
-                            budget.setAmount(budget.getAmount()*-1);
-
-                        databaseManager.updateTableBudget(databaseManager.makeContentValue(budget, new int[]{idAccount1, idCategory}),
-                                DatabaseSchema.TABLE_NAME_BUDGET.getValue(),new String[]{String.valueOf(idBudget)});
-
-                        account.setBalance(account.getBalance() - amountOld);
-                        account.setBalance(account.getBalance() + Double.valueOf(budget.getAmount()));
-
-                        databaseManager.updateTableAccount(databaseManager.makeContentValue(account),
-                                DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
-                                new String[]{String.valueOf(cursorAccount.getInt(0))});
+                        }
+                        idCategory = databaseManager.findIdFromCursorPosition(cursorCategory, categoryPosition);
+                        fillBudgetFromInput(account1);
+                        budget.setAmount(budget.getAmount() * -1);
+                        saveInsertBudget(cursorAccount1,account1,idAccount1);
+                        fillBudgetFromInput(account2);
+                        saveInsertBudget(cursorAccount2,account2,idAccount2);
 
 
-                        Toast.makeText(this, "one row was update", Toast.LENGTH_LONG).show();
+                    } else {
+                        fillBudgetFromInput(account1);
+
+                        if (textViewTitleI.getText().toString().equals("Edit budget")) {
+                            if (amountOld < 0)
+                                budget.setAmount(budget.getAmount() * -1);
+                            saveEditBudget();
+                        } else {
+                            if (textViewTitleI.getText().toString().equals("Add expense"))
+                                budget.setAmount(budget.getAmount() * -1);
+
+                            saveInsertBudget(cursorAccount1,account1,idAccount1);
+
+                            Toast.makeText(this, "one row was insert", Toast.LENGTH_LONG).show();
+                        }
                     }
-                    else {
-                        if (textViewTitleI.getText().toString().equals("Add expense"))
-                            budget.setAmount(budget.getAmount()*-1);
-
-                        databaseManager.insertInTable(databaseManager.makeContentValue(budget, new int[]{idAccount1, idCategory}),
-                                DatabaseSchema.TABLE_NAME_BUDGET.getValue());
-
-                        account.setBalance(account.getBalance() + Double.valueOf(budget.getAmount()));
-
-                        databaseManager.updateTableAccount(databaseManager.makeContentValue(account),
-                                DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
-                                new String[]{String.valueOf(cursorAccount.getInt(0))});
-
-                        Toast.makeText(this, "one row was insert", Toast.LENGTH_LONG).show();
-                    }
-
-                    intent = new Intent(this,ListBudgetActivity.class);
+                    intent = new Intent(this, ListBudgetActivity.class);
                     startActivity(intent);
 
                     finish();
 
-                }catch (Exception e){
-                    startAlert(e.getMessage());}
+                } catch (Exception e) {
+                    startAlert(e.getMessage());
+                }
 
                 break;
             case R.id.imageButtonCancelI:
@@ -241,9 +251,36 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    private void saveInsertBudget(Cursor cursor, Account account,int idAccount) {
+        databaseManager.insertInTable(databaseManager.makeContentValue(budget, new int[]{idAccount, idCategory}),
+                DatabaseSchema.TABLE_NAME_BUDGET.getValue());
+
+        account.setBalance(account.getBalance() + budget.getAmount());
+
+        databaseManager.updateTableAccount(databaseManager.makeContentValue(account),
+                DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
+                new String[]{String.valueOf(cursor.getInt(0))});
+    }
+
+    private void saveEditBudget() {
+
+        databaseManager.updateTableBudget(databaseManager.makeContentValue(budget, new int[]{idAccount1, idCategory}),
+                DatabaseSchema.TABLE_NAME_BUDGET.getValue(), new String[]{String.valueOf(idBudget)});
+
+        account1.setBalance(account1.getBalance() - amountOld);
+        account1.setBalance(account1.getBalance() + budget.getAmount());
+
+        databaseManager.updateTableAccount(databaseManager.makeContentValue(account1),
+                DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
+                new String[]{String.valueOf(cursorAccount1.getInt(0))});
+
+
+        Toast.makeText(this, "one row was update", Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-        budget.setDate(year,month,dayOfMonth);
+        budget.setDate(year, month, dayOfMonth);
         textViewDateI.setText(budget.getStringDate());
     }
 
@@ -260,12 +297,12 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void afterTextChanged(Editable s) {
 
-        if (s.toString().getBytes()[s.toString().length()-1]!= '$') {
+        if (s.toString().getBytes()[s.toString().length() - 1] != '$') {
             editTextAmountI.removeTextChangedListener(this);
             current = s.toString().replace("$", "");
-            current = current+ "$";
+            current = current + "$";
             editTextAmountI.setText(current);
-            editTextAmountI.setSelection(current.toString().length()-1);
+            editTextAmountI.setSelection(current.toString().length() - 1);
             editTextAmountI.addTextChangedListener(this);
         }
 
@@ -274,26 +311,24 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        Spinner spin = (Spinner)parent;
+        Spinner spin = (Spinner) parent;
 
-            switch (spin.getId()) {
-                case R.id.spinnerUpI:
-                    account = databaseManager.fillAccountWithCursor(cursorAccount,position);
-                    idAccount1 = databaseManager.findIdFromCursorPosition(cursorAccount,position);
-                    break;
+        switch (spin.getId()) {
+            case R.id.spinnerUpI:
+                account1 = databaseManager.fillAccountWithCursor(cursorAccount1, position);
+                idAccount1 = databaseManager.findIdFromCursorPosition(cursorAccount1, position);
+                break;
 
-                case R.id.spinnerDownI:
-                    if (textViewTitleI.getText().equals("Add transfer")) {
-                        account = databaseManager.fillAccountWithCursor(cursorAccount,position);
-                        idAccount2 = databaseManager.findIdFromCursorPosition(cursorAccount,position);
-                    }
-                    else {
-                        category = databaseManager.fillCategoryWithCursor(cursorCategory,position);
-                        idCategory = databaseManager.findIdFromCursorPosition(cursorCategory,position);
-                    }
-                    break;
-            }
-
+            case R.id.spinnerDownI:
+                if (textViewTitleI.getText().equals("Add transfer")) {
+                    account2 = databaseManager.fillAccountWithCursor(cursorAccount2, position);
+                    idAccount2 = databaseManager.findIdFromCursorPosition(cursorAccount2, position);
+                } else {
+                    category = databaseManager.fillCategoryWithCursor(cursorCategory, position);
+                    idCategory = databaseManager.findIdFromCursorPosition(cursorCategory, position);
+                }
+                break;
+        }
 
 
     }

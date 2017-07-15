@@ -41,8 +41,8 @@ public enum DatabaseSchema {
     ID_ACCOUNT_FOREIGN_KEY("account_id"),
     ID_CATEGORY_FOREIGN_KEY("category_id"),
     BUDGET_DATE("budget_date"),
-    AMOUNTH("amounth"),
-    BUDGET_COLUMNS("_id,account_id,category_id,date,amounth"),
+    AMOUNT("amounth"),
+    BUDGET_COLUMNS("_id,account_id,category_id,budget_date,amounth"),
 
     CREATE_ACCOUNT(createAccount()),
     CREATE_CATEGORY(createCategory()),
@@ -89,7 +89,7 @@ public enum DatabaseSchema {
         string +=  ID_CATEGORY_FOREIGN_KEY.getValue()+ " INTEGER ,";
         string +=  ID_ACCOUNT_FOREIGN_KEY.getValue() + " INTEGER ,";
         string +=  BUDGET_DATE.getValue() + " DATE ,";
-        string +=  AMOUNTH.getValue() + " DOUBLE ,";
+        string +=  AMOUNT.getValue() + " DOUBLE ,";
 
         string += "FOREIGN KEY ("+ ID_CATEGORY_FOREIGN_KEY.getValue()+
                   ") REFERENCES " + TABLE_NAME_CATEGORY.getValue()+" (" +ID_CATEGORY.getValue() + "),";

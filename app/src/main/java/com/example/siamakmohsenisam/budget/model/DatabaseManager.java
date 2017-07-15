@@ -66,6 +66,14 @@ public class DatabaseManager extends Application {
         return sqLiteDatabase.rawQuery(sql,null);
     }
 
+    public Cursor queryFindAccountName(String[] whereArgs){
+        return sqLiteDatabase.query(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","),
+               DatabaseSchema.ACCOUNT_NAME.getValue()+"=? ",whereArgs,null,null,null);
+    }
+//    public Cursor queryFindCategoryName(String[] whereArgs){
+//        return sqLiteDatabase.query(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","),
+//                DatabaseSchema.CATEGORY_NAME.getValue()+"=? ",whereArgs,null,null,null);
+//    }
     public Cursor querySelectAll(String tableName , String[] columns ){
         return sqLiteDatabase.query(tableName,columns,null,null,null,null,null);
     }
@@ -83,23 +91,6 @@ public class DatabaseManager extends Application {
                 DatabaseSchema.ID_BUDGET.getValue()+"=? ",whereArgs);
     }
 
-
-
-
-
-//
-//    public long deleteDatabaseValue(ContentValues values, String[] emails ){
-//        return sqLiteDatabase.update(Schema.TABLE_NAME.getValue(),values,Schema.EMAIL.getValue()+"=?",emails);
-//    }
-//    public Cursor queryDatabaseValue(String column , String[] values ){
-//        return sqLiteDatabase.query(Schema.TABLE_NAME.getValue(),Schema.COLUMNS.getValue().split(",")
-//                ,column+"=?",values,null,null,null);
-//    }
-//    public void deleteDatabase(){
-//
-//        this.deleteDatabase(Schema.DATABASE_NAME.getValue());
-//        Log.d("DATABASE","The database "+Schema.DATABASE_NAME.getValue()+" is removed successfully");
-//    }
     public <T> ContentValues makeContentValue(T object, int... idAccountCategory) {
 
         ContentValues contentValues = new ContentValues();
@@ -117,12 +108,14 @@ public class DatabaseManager extends Application {
 
         if (object instanceof Budget){
             contentValues.put(DatabaseSchema.BUDGET_DATE.getValue(),((Budget) object).getStringDateReal());
-            contentValues.put(DatabaseSchema.AMOUNTH.getValue(),((Budget) object).getAmount());
+            contentValues.put(DatabaseSchema.AMOUNT.getValue(),((Budget) object).getAmount());
             contentValues.put(DatabaseSchema.ID_ACCOUNT_FOREIGN_KEY.getValue(),(idAccountCategory[0]));
             contentValues.put(DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue(),(idAccountCategory[1]));
         }
         return contentValues;
     }
+
+
     public Account fillAccountWithCursor(Cursor cursor,int position) {
 
         Account account = new Account();
@@ -147,7 +140,7 @@ public class DatabaseManager extends Application {
             cursor.moveToNext();
         return cursor.getInt(0);
     }
-    public int findPositionfromCursorId(Cursor cursor, int id) {
+    public int findPositionFromCursorId(Cursor cursor, int id) {
         cursor.moveToFirst();
         for (int i = 0; i < cursor.getCount(); i++) {
             if (cursor.getInt(0) == id)
@@ -155,5 +148,14 @@ public class DatabaseManager extends Application {
             cursor.moveToNext();
         }
         return 0;
+    }
+    public int findPositionCategoryNameFromCursor(Cursor cursor, String name) {
+        cursor.moveToFirst();
+        for (int i = 0; i < cursor.getCount(); i++) {
+            if (cursor.getString(1).equals(name))
+                return i;
+            cursor.moveToNext();
+        }
+        return -1;
     }
 }

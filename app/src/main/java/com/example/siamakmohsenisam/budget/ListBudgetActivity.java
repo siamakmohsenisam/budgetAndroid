@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -28,8 +29,6 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
     DatabaseManager databaseManager;
 
     Intent intent;
-
-    int editIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +60,7 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
         swipeMenuListViewLB.setOnMenuItemClickListener(this);
 
         fillCursorBudgetAdapter();
+
     }
 
     /**
@@ -112,12 +112,10 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
 
             // delete button
             case 0:
-                editIndex = position;
                 databaseManager.findIdFromCursorPosition(cursor,position);
                 intent = new Intent(this,AddBudgetActivity.class);
-                intent.putExtra("editIndex",editIndex);
-                intent.putExtra("title","Edit budget");
 
+                intent.putExtra("title","Edit budget");
                 intent.putExtra("id",cursor.getInt(0));
                 intent.putExtra("tagUp",cursor.getInt(2));
                 intent.putExtra("tagDown",cursor.getInt(1));
@@ -175,7 +173,7 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
                 R.layout.four_text_cell,
                 cursor,
                 new String[]{DatabaseSchema.ACCOUNT_NAME.getValue(), DatabaseSchema.CATEGORY_NAME.getValue(),
-                        DatabaseSchema.BUDGET_DATE.getValue(), DatabaseSchema.AMOUNTH.getValue()},
+                        DatabaseSchema.BUDGET_DATE.getValue(), DatabaseSchema.AMOUNT.getValue()},
                 new int[]{R.id.textViewUpLeftCell, R.id.textViewUpMiddelCell,
                         R.id.textViewLeftDownCell, R.id.textViewRightCell}, 1
         );
