@@ -13,10 +13,12 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CalendarView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +30,8 @@ import com.example.siamakmohsenisam.budget.model.DatabaseSchema;
 
 
 public class AddBudgetActivity extends AppCompatActivity implements View.OnClickListener,
-        CalendarView.OnDateChangeListener, TextWatcher, AdapterView.OnItemSelectedListener, DialogInterface.OnClickListener {
+        CalendarView.OnDateChangeListener, TextWatcher, AdapterView.OnItemSelectedListener,
+        DialogInterface.OnClickListener {
 
     ImageButton imageButtonDateI, imageButtonCancelI, imageButtonSaveI;
     Spinner spinnerDownI, spinnerUpI;
@@ -71,7 +74,6 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
         imageButtonDateI = (ImageButton) findViewById(R.id.imageButtonDateI);
         imageButtonCancelI = (ImageButton) findViewById(R.id.imageButtonCancelI);
         imageButtonSaveI = (ImageButton) findViewById(R.id.imageButtonSaveI);
-
         spinnerUpI = (Spinner) findViewById(R.id.spinnerUpI);
         spinnerDownI = (Spinner) findViewById(R.id.spinnerDownI);
         textViewDateI = (TextView) findViewById(R.id.textViewDateI);
@@ -80,12 +82,15 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
         textViewDownI = (TextView) findViewById(R.id.textViewDownI);
         editTextAmountI = (EditText) findViewById(R.id.editTextAmountI);
 
+
         imageButtonDateI.setOnClickListener(this);
         imageButtonSaveI.setOnClickListener(this);
         imageButtonCancelI.setOnClickListener(this);
         spinnerDownI.setOnItemSelectedListener(this);
         spinnerUpI.setOnItemSelectedListener(this);
         editTextAmountI.addTextChangedListener(this);
+
+
 
         aBuilder = new AlertDialog.Builder(this);
         budget = new Budget();
@@ -114,15 +119,15 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
 
 
         if (textViewTitleI.getText().equals("Add transfer")) {
-            cursorAccount1 = fillCursorAccountAdapter(spinnerUpI);
-            cursorAccount2 = fillCursorAccountAdapter(spinnerDownI);
+            cursorAccount1= databaseManager.fillCursorAccountAdapter(simpleCursorAdapter,cursorAccount1,spinnerUpI);
+            cursorAccount2= databaseManager.fillCursorAccountAdapter(simpleCursorAdapter,cursorAccount2,spinnerDownI);
 
             textViewUpI.setText("From :");
             textViewDownI.setText("To :");
         } else {
 
-            cursorAccount1 = fillCursorAccountAdapter(spinnerUpI);
-            fillCursorCategoryAdapter(spinnerDownI);
+            cursorAccount1= databaseManager.fillCursorAccountAdapter(simpleCursorAdapter,cursorAccount1,spinnerUpI);
+            cursorCategory= databaseManager.fillCursorCategoryAdapter(simpleCursorAdapter,cursorCategory,spinnerDownI);
 
             spinnerUpI.setSelection(databaseManager.findPositionFromCursorId(cursorAccount1, idSpinnerUp));
             spinnerDownI.setSelection(databaseManager.findPositionFromCursorId(cursorCategory, idSpinnerDown));
@@ -144,37 +149,6 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
         budget.setCategory(category);
     }
 
-    private Cursor fillCursorAccountAdapter(Spinner spinner) {
-        Cursor cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
-                DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","));
-        simpleCursorAdapter = new
-                SimpleCursorAdapter(this,
-                R.layout.two_text_cell,
-                cursor,
-                new String[]{DatabaseSchema.BANK_NAME.getValue(), DatabaseSchema.ACCOUNT_NAME.getValue()},
-                new int[]{R.id.textViewLeftCell, R.id.textViewRightCell}, 1
-        );
-        spinner.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursor);
-        simpleCursorAdapter.notifyDataSetChanged();
-        return cursor;
-    }
-
-    private void fillCursorCategoryAdapter(Spinner spinner) {
-        cursorCategory = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
-                DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","));
-        simpleCursorAdapter = new
-                SimpleCursorAdapter(this,
-                R.layout.one_text_cell,
-                cursorCategory,
-                new String[]{DatabaseSchema.CATEGORY_NAME.getValue()},
-                new int[]{R.id.textViewCell}, 1
-        );
-
-        spinner.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursorCategory);
-        simpleCursorAdapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onClick(View v) {
@@ -342,4 +316,5 @@ public class AddBudgetActivity extends AppCompatActivity implements View.OnClick
     public void onClick(DialogInterface dialog, int which) {
 
     }
+
 }

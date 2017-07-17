@@ -59,7 +59,7 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
         swipeMenuListViewLB.setMenuCreator(this);
         swipeMenuListViewLB.setOnMenuItemClickListener(this);
 
-        fillCursorBudgetAdapter();
+        cursor = databaseManager.fillCursorBudgetAdapter(simpleCursorAdapter,cursor,swipeMenuListViewLB);
 
     }
 
@@ -130,7 +130,7 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
                     databaseManager.deleteRowTableBudget(new String[]{
                             String.valueOf(databaseManager.findIdFromCursorPosition(cursor,position))
                     });
-                    fillCursorBudgetAdapter();
+                    cursor = databaseManager.fillCursorBudgetAdapter(simpleCursorAdapter,cursor,swipeMenuListViewLB);
                 break;
         }
 
@@ -166,21 +166,5 @@ public class ListBudgetActivity extends AppCompatActivity implements SwipeMenuCr
     /**
      * fill coursors
      */
-    private void fillCursorBudgetAdapter() {
-        cursor = databaseManager.querySelectAll();
-        simpleCursorAdapter = new
-                SimpleCursorAdapter(this,
-                R.layout.four_text_cell,
-                cursor,
-                new String[]{DatabaseSchema.ACCOUNT_NAME.getValue(), DatabaseSchema.CATEGORY_NAME.getValue(),
-                        DatabaseSchema.BUDGET_DATE.getValue(), DatabaseSchema.AMOUNT.getValue()},
-                new int[]{R.id.textViewUpLeftCell, R.id.textViewUpMiddelCell,
-                        R.id.textViewLeftDownCell, R.id.textViewRightCell}, 1
-        );
-        swipeMenuListViewLB.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursor);
-        simpleCursorAdapter.notifyDataSetChanged();
-
-    }
 
 }

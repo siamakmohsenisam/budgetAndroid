@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.imageButtonReportM:
-//                intent = new Intent(this,SelectBudgetActivity.class);
-//                startActivity(intent);
+                intent = new Intent(this,SearchActivity.class);
+                startActivity(intent);
 
                 break;
 

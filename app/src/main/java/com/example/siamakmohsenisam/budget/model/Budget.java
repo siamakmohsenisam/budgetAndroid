@@ -66,12 +66,30 @@ public class Budget {
     }
 
     public String getStringDate(){
-        return date.get(Calendar.YEAR)+"-"+(1+date.get(Calendar.MONTH))+
-                "-"+date.get(Calendar.DATE);
+        String myDate="";
+        myDate += date.get(Calendar.YEAR)+"-";
+        if (1+date.get(Calendar.MONTH)<10)
+            myDate += "0";
+        myDate += (1+date.get(Calendar.MONTH));
+        myDate += "-";
+        if (date.get(Calendar.DATE)<10)
+            myDate += "0";
+        myDate += (date.get(Calendar.DATE));
+
+        return myDate;
     }
     public String getStringDateReal(){
-        return date.get(Calendar.YEAR)+"-"+(date.get(Calendar.MONTH))+
-                "-"+date.get(Calendar.DATE);
+        String myDate="";
+        myDate += date.get(Calendar.YEAR)+"-";
+        if (date.get(Calendar.MONTH)<10)
+            myDate += "0";
+        myDate += (date.get(Calendar.MONTH));
+        myDate += "-";
+        if (date.get(Calendar.DATE)<10)
+            myDate += "0";
+        myDate += (date.get(Calendar.DATE));
+
+        return myDate;
     }
 
     public void setDate(int year, int month , int day) {

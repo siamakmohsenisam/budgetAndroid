@@ -24,10 +24,13 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".ListActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".ListBudgetActivity"
+            android:label="List of Budget"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".SearchActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
-        <activity android:name=".ListBudgetActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:label="List of Budget"></activity>
     </application>
 
 </manifest>

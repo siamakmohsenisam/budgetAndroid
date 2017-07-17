@@ -28,8 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/boxwhite"
-            android:padding="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -59,8 +59,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:textSize="20sp"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/colorWhite"
+                        android:textSize="20sp" />
 
                     <ImageButton
                         android:id="@+id/imageButtonDateI"
@@ -77,10 +77,10 @@
                     android:id="@+id/editTextAmountI"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
                     android:ems="10"
                     android:gravity="center_vertical"
                     android:hint="E.g. 2000$"
-                    android:layout_marginBottom="10dp"
                     android:inputType="numberDecimal"
                     android:textColor="@color/colorWhite"
                     android:textColorHint="@color/colorHint"
@@ -88,11 +88,11 @@
 
                 <TextView
                     android:id="@+id/textViewUpI"
+                    style="@style/edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/edit_text"
-                    android:textColor="@color/colorgold"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@color/colorgold" />
 
                 <Spinner
                     android:id="@+id/spinnerUpI"
@@ -102,12 +102,12 @@
 
                 <TextView
                     android:id="@+id/textViewDownI"
+                    style="@style/edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    style="@style/edit_text"
-                    android:textColor="@color/colorgold"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@color/colorgold" />
 
                 <Spinner
                     android:id="@+id/spinnerDownI"
@@ -117,6 +117,7 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

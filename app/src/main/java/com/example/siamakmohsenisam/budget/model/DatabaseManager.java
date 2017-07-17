@@ -4,7 +4,14 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.siamakmohsenisam.budget.R;
+
+import java.sql.Date;
 
 /**
  * Created by siamakmohsenisam on 2017-07-08.
@@ -20,6 +27,7 @@ public class DatabaseManager extends Application {
         super.onCreate();
         databaseOpenHelper = new DatabaseOpenHelper(this);
         sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
+
 
     }
 
@@ -62,25 +70,43 @@ public class DatabaseManager extends Application {
         sql += DatabaseSchema.TABLE_NAME_ACCOUNT.getValue()+" a ";
         sql += " where ";
         sql += " b."+DatabaseSchema.ID_ACCOUNT_FOREIGN_KEY.getValue()+" = a." + DatabaseSchema.ID_ACCOUNT.getValue() +" and ";
-        sql += " b."+DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue()+" = c." + DatabaseSchema.ID_CATEGORY.getValue() +" ; ";
+        sql += " b."+DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue()+" = c." + DatabaseSchema.ID_CATEGORY.getValue() +"  ";
+        sql += " order by "+ DatabaseSchema.BUDGET_DATE.getValue() + " DESC ; ";
         return sqLiteDatabase.rawQuery(sql,null);
     }
 
-    public Cursor queryFindAccountName(String[] whereArgs){
-        return sqLiteDatabase.query(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","),
-               DatabaseSchema.ACCOUNT_NAME.getValue()+"=? ",whereArgs,null,null,null);
+    public Cursor queryBudget(String from,String to, int idAccount, int idCategory){
+
+        String sql="";
+        sql += "select * from ";
+        sql += DatabaseSchema.TABLE_NAME_BUDGET.getValue()+" b , ";
+        sql += DatabaseSchema.TABLE_NAME_CATEGORY.getValue()+" c , ";
+        sql += DatabaseSchema.TABLE_NAME_ACCOUNT.getValue()+" a ";
+        sql += " where ";
+
+        if (idAccount!=-1)
+            sql += " b."+DatabaseSchema.ID_ACCOUNT_FOREIGN_KEY.getValue()+" = " + String.valueOf(idAccount) +" and ";
+
+        if (idCategory!=-1)
+            sql += " b."+DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue()+" = " + String.valueOf(idCategory) +" and ";
+
+        sql += " b."+DatabaseSchema.BUDGET_DATE.getValue()+" BETWEEN \"" + from +"\" and \"" + to +"\" and ";
+
+        sql += " b."+DatabaseSchema.ID_ACCOUNT_FOREIGN_KEY.getValue()+" = a." + DatabaseSchema.ID_ACCOUNT.getValue() +" and ";
+        sql += " b."+DatabaseSchema.ID_CATEGORY_FOREIGN_KEY.getValue()+" = c." + DatabaseSchema.ID_CATEGORY.getValue() +"  ";
+
+        sql += " order by "+ DatabaseSchema.BUDGET_DATE.getValue() + " DESC ; ";
+        return sqLiteDatabase.rawQuery(sql,null);
     }
-//    public Cursor queryFindCategoryName(String[] whereArgs){
-//        return sqLiteDatabase.query(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","),
-//                DatabaseSchema.CATEGORY_NAME.getValue()+"=? ",whereArgs,null,null,null);
-//    }
+
     public Cursor querySelectAll(String tableName , String[] columns ){
         return sqLiteDatabase.query(tableName,columns,null,null,null,null,null);
     }
 
-    public long deleteRowTableAccount(String[] whereArgs){
-        return sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
+    public void deleteRowTableAccount(String[] whereArgs){
+         sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
                 DatabaseSchema.ID_ACCOUNT.getValue()+"=? ",whereArgs);
+
     }
     public long deleteRowTableCategory(String[] whereArgs){
         return sqLiteDatabase.delete(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
@@ -158,4 +184,96 @@ public class DatabaseManager extends Application {
         }
         return -1;
     }
+
+    /**
+     *   Fill Cursors
+     *
+     * @param simpleCursorAdapter
+     * @param cursor
+     * @param object
+     */
+
+
+    public Cursor fillCursorAccountAdapter(SimpleCursorAdapter simpleCursorAdapter, Cursor cursor,Object object) {
+        cursor = querySelectAll(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
+                DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","));
+        simpleCursorAdapter = new
+                SimpleCursorAdapter(this,
+                R.layout.two_text_cell,
+                cursor,
+                new String[]{DatabaseSchema.BANK_NAME.getValue(), DatabaseSchema.ACCOUNT_NAME.getValue()},
+                new int[]{R.id.textViewLeftCell, R.id.textViewRightCell}, 1
+        );
+        if (object instanceof Spinner)
+            ((Spinner) object).setAdapter(simpleCursorAdapter);
+        if (object instanceof ListView)
+            ((ListView) object).setAdapter(simpleCursorAdapter);
+        simpleCursorAdapter.changeCursor(cursor);
+        simpleCursorAdapter.notifyDataSetChanged();
+
+        return cursor;
+    }
+
+    public Cursor fillCursorCategoryAdapter(SimpleCursorAdapter simpleCursorAdapter, Cursor cursor,Object object) {
+        cursor = querySelectAll(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
+                DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","));
+        simpleCursorAdapter = new
+                SimpleCursorAdapter(this,
+                R.layout.one_text_cell,
+                cursor,
+                new String[]{DatabaseSchema.CATEGORY_NAME.getValue()},
+                new int[]{R.id.textViewCell}, 1
+        );
+
+        if (object instanceof Spinner)
+            ((Spinner) object).setAdapter(simpleCursorAdapter);
+        if (object instanceof ListView)
+            ((ListView) object).setAdapter(simpleCursorAdapter);
+        simpleCursorAdapter.changeCursor(cursor);
+        simpleCursorAdapter.notifyDataSetChanged();
+        return cursor;
+    }
+
+    public Cursor fillCursorBudgetAdapter(SimpleCursorAdapter simpleCursorAdapter, Cursor cursor, Object object) {
+        cursor = querySelectAll();
+        simpleCursorAdapter = new
+                SimpleCursorAdapter(this,
+                R.layout.four_text_cell,
+                cursor,
+                new String[]{DatabaseSchema.ACCOUNT_NAME.getValue(), DatabaseSchema.CATEGORY_NAME.getValue(),
+                        DatabaseSchema.BUDGET_DATE.getValue(), DatabaseSchema.AMOUNT.getValue()},
+                new int[]{R.id.textViewUpLeftCell, R.id.textViewUpMiddelCell,
+                        R.id.textViewLeftDownCell, R.id.textViewRightCell}, 1
+        );
+        if (object instanceof Spinner)
+            ((Spinner) object).setAdapter(simpleCursorAdapter);
+        if (object instanceof ListView)
+            ((ListView) object).setAdapter(simpleCursorAdapter);
+        simpleCursorAdapter.changeCursor(cursor);
+        simpleCursorAdapter.notifyDataSetChanged();
+
+        return cursor;
+    }
+
+    public Cursor fillCursorBudgetAdapter2(SimpleCursorAdapter simpleCursorAdapter, Cursor cursor, Object object) {
+
+        simpleCursorAdapter = new
+                SimpleCursorAdapter(this,
+                R.layout.four_text_cell,
+                cursor,
+                new String[]{DatabaseSchema.ACCOUNT_NAME.getValue(), DatabaseSchema.CATEGORY_NAME.getValue(),
+                        DatabaseSchema.BUDGET_DATE.getValue(), DatabaseSchema.AMOUNT.getValue()},
+                new int[]{R.id.textViewUpLeftCell, R.id.textViewUpMiddelCell,
+                        R.id.textViewLeftDownCell, R.id.textViewRightCell}, 1
+        );
+        if (object instanceof Spinner)
+            ((Spinner) object).setAdapter(simpleCursorAdapter);
+        if (object instanceof ListView)
+            ((ListView) object).setAdapter(simpleCursorAdapter);
+        simpleCursorAdapter.changeCursor(cursor);
+        simpleCursorAdapter.notifyDataSetChanged();
+
+        return cursor;
+    }
+
 }

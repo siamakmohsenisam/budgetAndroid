@@ -103,7 +103,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
 
     private void initializeDialogAccount() {
 
-        fillCursorAccountAdapter();
+        cursor = databaseManager.fillCursorAccountAdapter(simpleCursorAdapter,cursor,swipeMenuListViewAC);
 
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.account_popup);
@@ -123,7 +123,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
 
     private void initializeDialogCategory() {
 
-        fillCursorCategoryAdapter();
+        cursor = databaseManager.fillCursorCategoryAdapter(simpleCursorAdapter,cursor,swipeMenuListViewAC);
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.category_popup);
 
@@ -207,14 +207,14 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
                     databaseManager.deleteRowTableAccount(new String[]{
                             String.valueOf(databaseManager.findIdFromCursorPosition(cursor,position))
                     });
-                    fillCursorAccountAdapter();
+                    cursor = databaseManager.fillCursorAccountAdapter(simpleCursorAdapter,cursor,swipeMenuListViewAC);
                 }
                 if (textViewtitleAC.getText().equals("Category list")) {
                     deleteFromBudget(databaseManager.findIdFromCursorPosition(cursor,position),1);
                     databaseManager.deleteRowTableCategory(new String[]{
                             String.valueOf(databaseManager.findIdFromCursorPosition(cursor,position))
                     });
-                    fillCursorCategoryAdapter();
+                    cursor = databaseManager.fillCursorCategoryAdapter(simpleCursorAdapter,cursor,swipeMenuListViewAC);
                 }
                 break;
         }
@@ -257,7 +257,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
                     else
                     databaseManager.insertInTable(databaseManager.makeContentValue(account), DatabaseSchema.TABLE_NAME_ACCOUNT.getValue());
 
-                    fillCursorAccountAdapter();
+                    cursor = databaseManager.fillCursorAccountAdapter(simpleCursorAdapter,cursor,swipeMenuListViewAC);
 
                     Toast.makeText(this, "add one row in account1 table", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
@@ -283,7 +283,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
                     databaseManager.insertInTable(databaseManager.makeContentValue(category),
                             DatabaseSchema.TABLE_NAME_CATEGORY.getValue());
 
-                    fillCursorCategoryAdapter();
+                    cursor = databaseManager.fillCursorCategoryAdapter(simpleCursorAdapter,cursor,swipeMenuListViewAC);
 
                     Toast.makeText(this, "add one row in category table", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
@@ -340,60 +340,19 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
         editTextNameC.setText(category.getCategoryName());
     }
 
-
-    /**
-     * ***************************************************
-     *
-     * fill coursors Adapter
-     *
-     * ***************************************************
-     */
-    private void fillCursorAccountAdapter() {
-        cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_ACCOUNT.getValue(),
-                DatabaseSchema.ACCOUNT_COLUMNS.getValue().split(","));
-        simpleCursorAdapter = new
-                SimpleCursorAdapter(this,
-                R.layout.four_text_cell,
-                cursor,
-                new String[]{DatabaseSchema.BANK_NAME.getValue(), DatabaseSchema.ACCOUNT_NAME.getValue(),
-                        DatabaseSchema.ACCOUNT_NUMBER.getValue(), DatabaseSchema.BALANCE.getValue()},
-                new int[]{R.id.textViewUpLeftCell, R.id.textViewUpMiddelCell,
-                        R.id.textViewLeftDownCell, R.id.textViewRightCell}, 1
-        );
-        swipeMenuListViewAC.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursor);
-        simpleCursorAdapter.notifyDataSetChanged();
-
-    }
-
-    private void fillCursorCategoryAdapter() {
-
-        cursor = databaseManager.querySelectAll(DatabaseSchema.TABLE_NAME_CATEGORY.getValue(),
-                DatabaseSchema.CATEGORY_COLUMNS.getValue().split(","));
-        simpleCursorAdapter = new
-                SimpleCursorAdapter(this,
-                R.layout.one_text_cell,
-                cursor,
-                new String[]{DatabaseSchema.CATEGORY_NAME.getValue()},
-                new int[]{R.id.textViewCell}, 1
-        );
-        swipeMenuListViewAC.setAdapter(simpleCursorAdapter);
-        simpleCursorAdapter.changeCursor(cursor);
-        simpleCursorAdapter.notifyDataSetChanged();
-
-    }
-
     private void deleteFromBudget(int id, int positionInDatabase) {
         cursorForDelete = databaseManager.querySelectAll();
+
         cursorForDelete.moveToFirst();
         for (int i = 0; i < cursorForDelete.getCount(); i++) {
+
             if (cursorForDelete.getInt(positionInDatabase)==id) {
                 databaseManager.deleteRowTableBudget(new String[]{
                         String.valueOf(cursorForDelete.getInt(0))});
 
-            }
 
-            cursor.moveToNext();
+            }
+            cursorForDelete.moveToNext();
         }
     }
 

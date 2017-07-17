@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:padding="15dp"
+    tools:context="com.example.siamakmohsenisam.budget.SearchActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/toolsBar"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/edit_text"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:gravity="right|fill_vertical"
+                android:text="From : " />
+
+            <TextView
+                android:id="@+id/textViewFromDateR"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|center_vertical"
+                android:textColor="@color/colorWhite"
+                 />
+
+            <ImageButton
+                android:id="@+id/imageButtonFromDateR"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/date" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/edit_text"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:gravity="right|fill_vertical"
+                android:text="To : " />
+
+            <TextView
+                android:id="@+id/textViewToDateR"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|center_vertical"
+                android:textColor="@color/colorWhite"
+                />
+
+            <ImageButton
+                android:id="@+id/imageButtonToDateR"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/date" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinnerUpSearchR"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/colorWhite" />
+
+            <Switch
+                android:id="@+id/switchUpR"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                 />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinnerDownSearchR"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/colorWhite" />
+
+            <Switch
+                android:id="@+id/switchDownR"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listViewR"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+</LinearLayout>
+
+
