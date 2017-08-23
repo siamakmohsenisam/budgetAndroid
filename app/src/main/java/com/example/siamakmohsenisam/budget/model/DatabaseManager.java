@@ -255,6 +255,26 @@ public class DatabaseManager extends Application {
         return cursor;
     }
 
+    public Cursor fillCursorAccountAdapter2(SimpleCursorAdapter simpleCursorAdapter, Cursor cursor, Object object) {
+        cursor = querySelectAll();
+        simpleCursorAdapter = new
+                SimpleCursorAdapter(this,
+                R.layout.four_text_cell,
+                cursor,
+                new String[]{DatabaseSchema.BANK_NAME.getValue(), DatabaseSchema.ACCOUNT_NAME.getValue(),
+                        DatabaseSchema.ACCOUNT_NUMBER.getValue(), DatabaseSchema.BALANCE.getValue()},
+                new int[]{R.id.textViewUpLeftCell, R.id.textViewUpMiddelCell,
+                        R.id.textViewLeftDownCell, R.id.textViewRightCell}, 1
+        );
+        if (object instanceof Spinner)
+            ((Spinner) object).setAdapter(simpleCursorAdapter);
+        if (object instanceof ListView)
+            ((ListView) object).setAdapter(simpleCursorAdapter);
+        simpleCursorAdapter.changeCursor(cursor);
+        simpleCursorAdapter.notifyDataSetChanged();
+
+        return cursor;
+    }
     public Cursor fillCursorBudgetAdapter2(SimpleCursorAdapter simpleCursorAdapter, Cursor cursor, Object object) {
 
         simpleCursorAdapter = new

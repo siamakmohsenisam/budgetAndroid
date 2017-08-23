@@ -103,7 +103,7 @@ public class ListActivity extends AppCompatActivity implements SwipeMenuCreator,
 
     private void initializeDialogAccount() {
 
-        cursor = databaseManager.fillCursorAccountAdapter(simpleCursorAdapter,cursor,swipeMenuListViewAC);
+        cursor = databaseManager.fillCursorAccountAdapter2(simpleCursorAdapter,cursor,swipeMenuListViewAC);
 
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.account_popup);
